@@ -89,22 +89,75 @@ public class FXMLAdminPacienteController implements Initializable {
 
     @FXML
     private void hableBtnRegresar(ActionEvent event) {
+        ((Stage) tfBusqueda.getScene().getWindow()).close();
     }
 
     @FXML
     private void hableBtnBuscar(ActionEvent event) {
+        cargarPacientes(tfBusqueda.getText().trim());
     }
 
     @FXML
     private void hableBtnAlta(ActionEvent event) {
+        abrirFormulario(null);
     }
 
     @FXML
     private void hableBtnEditar(ActionEvent event) {
+        Paciente seleccionado = tvPacientes.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            Utilidades.mostrarAlertaSimple("Selecciona un paciente",
+                    "Elige un paciente de la tabla para editarlo.", Alert.AlertType.WARNING);
+            return;
+        }
+        abrirFormulario(seleccionado);
     }
 
     @FXML
     private void hableBtnBaja(ActionEvent event) {
+        Paciente seleccionado = tvPacientes.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            Utilidades.mostrarAlertaSimple("Selecciona un paciente",
+                    "Elige un paciente de la tabla para darlo de baja.", Alert.AlertType.WARNING);
+            return;
+        }
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar baja");
+        confirmacion.setHeaderText(null);
+        confirmacion.setContentText("¿Dar de baja a " + seleccionado.getNombre() + " "
+                + seleccionado.getApellidoPaterno() + " (" + seleccionado.getCodigoPaciente() + ")?");
+        Optional<ButtonType> respuesta = confirmacion.showAndWait();
+        if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
+            try {
+                PacienteDAO.darDeBajaPaciente(seleccionado.getIdPaciente());
+                Utilidades.mostrarAlertaSimple("Baja realizada",
+                        "El paciente fue dado de baja.", Alert.AlertType.INFORMATION);
+                cargarPacientes(tfBusqueda.getText().trim());
+            } catch (RuntimeException e) {
+                Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
+            }
+        }
     }
     
+    private void abrirFormulario(Paciente pacienteEdicion) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/nutricionalappfx/vista/FXMLFormularioPaciente.fxml"));
+            Parent vista = loader.load();
+            FXMLFormularioPacienteController controlador = loader.getController();
+            controlador.inicializarFormulario(pacienteEdicion);
+
+            Stage escenario = new Stage();
+            escenario.setScene(new Scene(vista));
+            escenario.setTitle(pacienteEdicion == null ? "Alta de paciente" : "Editar paciente");
+            escenario.initModality(Modality.APPLICATION_MODAL);
+            escenario.showAndWait();
+
+            cargarPacientes(tfBusqueda.getText().trim());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error",
+                    "No se pudo abrir el formulario de paciente.", Alert.AlertType.ERROR);
+        }
+    }
 }
