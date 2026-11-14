@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nutricionalappfx.controlador.FXMLAdminPacienteController">
-    
+<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nutricionalappfx.controlador.FXMLAdminPacienteController">
+   <children>
+      <Button layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#hableBtnRegresar" text="←" />
+      <Label layoutX="69.0" layoutY="21.0" text="Administrador de pacientes">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField fx:id="tfBusqueda" layoutX="20.0" layoutY="70.0" prefWidth="260.0" promptText="Código o nombre del paciente" />
+      <Button layoutX="290.0" layoutY="70.0" mnemonicParsing="false" onAction="#hableBtnBuscar" text="Buscar" />
+      <Button layoutX="520.0" layoutY="70.0" mnemonicParsing="false" onAction="#hableBtnAlta" prefWidth="80.0" text="Alta" />
+      <Button layoutX="610.0" layoutY="70.0" mnemonicParsing="false" onAction="#hableBtnEditar" prefWidth="80.0" text="Editar" />
+      <Button layoutX="700.0" layoutY="70.0" mnemonicParsing="false" onAction="#hableBtnBaja" prefWidth="80.0" text="Baja" />
+      <TableView fx:id="tvPacientes" layoutX="20.0" layoutY="115.0" prefHeight="365.0" prefWidth="760.0">
+         <columns>
+            <TableColumn fx:id="colCodigo" prefWidth="72.0" text="Código" />
+            <TableColumn fx:id="colNombre" prefWidth="114.0" text="Nombre" />
+            <TableColumn fx:id="colApellidoPaterno" prefWidth="132.0" text="Apellido paterno" />
+            <TableColumn fx:id="colApellidoMaterno" prefWidth="144.0" text="Apellido materno" />
+            <TableColumn fx:id="colTelefono" prefWidth="128.0" text="Teléfono" />
+            <TableColumn fx:id="colCorreo" prefWidth="170.0" text="Correo" />
+         </columns>
+      </TableView>
+   </children>
 </AnchorPane>
