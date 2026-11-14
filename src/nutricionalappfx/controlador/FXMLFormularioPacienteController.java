@@ -6,7 +6,13 @@ package nutricionalappfx.controlador;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 
 /**
  * FXML Controller class
@@ -15,6 +21,31 @@ import javafx.fxml.Initializable;
  */
 public class FXMLFormularioPacienteController implements Initializable {
 
+    @FXML
+    private TextField tfCodigo;
+    @FXML
+    private TextField tfNombre;
+    @FXML
+    private TextField tfApellidoPaterno;
+    @FXML
+    private TextField tfApellidoMaterno;
+    @FXML
+    private DatePicker dpFechaNacimiento;
+    @FXML
+    private TextField tfTelefono;
+    @FXML
+    private RadioButton rbFemenino;
+    @FXML
+    private ToggleGroup tgSexo;
+    @FXML
+    private RadioButton rbMasculino;
+    @FXML
+    private TextField tfAltura;
+    @FXML
+    private TextField tfPesoInicial;
+    @FXML
+    private TextField tfCorreo;
+
     /**
      * Initializes the controller class.
      */
@@ -22,5 +53,13 @@ public class FXMLFormularioPacienteController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+
+    @FXML
+    private void hableBtnCancelar(ActionEvent event) {
+    }
+
+    @FXML
+    private void hableBtnGuardar(ActionEvent event) {
+    }
     
 }
