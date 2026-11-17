@@ -135,8 +135,5 @@ public class Paciente {
 
     public void setIdEstatus(int idEstatus) {
         this.idEstatus = idEstatus;
-    }
-    
-    
-    
+    }    
 }
