@@ -6,8 +6,10 @@ package nutricionalappfx.controlador;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import nutricionalappfx.dominio.pojo.Colaborador;
 
@@ -23,6 +25,16 @@ public class FXMLPrincipalController implements Initializable {
     private Label lbNombre;
     @FXML
     private Label lbRol;
+    @FXML
+    private Button btnColaboradores;
+    @FXML
+    private Button btnPacientes;
+    @FXML
+    private Button btnCitas;
+    @FXML
+    private Button btnDietas;
+    @FXML
+    private Button btnConsultas;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -39,5 +51,29 @@ public class FXMLPrincipalController implements Initializable {
             lbNombre.setText("Bienvenido "+colaborador.toString());
             lbRol.setText("Rol: "+colaborador.getRol());
         } 
+    }
+
+    @FXML
+    private void hableBtnColaboradores(ActionEvent event) {
+    }
+
+    @FXML
+    private void hableBtnPacientes(ActionEvent event) {
+    }
+
+    @FXML
+    private void hableBtnCitas(ActionEvent event) {
+    }
+
+    @FXML
+    private void hableBtnDietas(ActionEvent event) {
+    }
+
+    @FXML
+    private void hableBtnConsultas(ActionEvent event) {
+    }
+
+    @FXML
+    private void hableBtnCerrarSesion(ActionEvent event) {
     }
 }

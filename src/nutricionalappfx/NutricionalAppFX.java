@@ -25,7 +25,7 @@ public class NutricionalAppFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent vista = FXMLLoader.load(getClass().getResource("vista/FXMLAdminPaciente.fxml"));
+            Parent vista = FXMLLoader.load(getClass().getResource("vista/FXMLAutenticacion.fxml"));
             Scene escena = new Scene(vista);
             primaryStage.setScene(escena);
             primaryStage.setTitle("Iniciar Sesion");

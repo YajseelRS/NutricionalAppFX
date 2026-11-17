@@ -1,9 +1,15 @@
 package nutricionalappfx.utilidades;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.io.UnsupportedEncodingException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 
 public class Utilidades {
 
@@ -31,5 +37,16 @@ public class Utilidades {
         alerta.setHeaderText(null);
         alerta.setContentText(contenido);
         alerta.showAndWait();
+    }
+    
+    public static <T> T cambiarEscena(Node nodoActual, String rutaFxml, String titulo) throws IOException {
+        FXMLLoader loader = new FXMLLoader(Utilidades.class.getResource(rutaFxml));
+        Parent vista = loader.load();
+        Stage escenario = (Stage) nodoActual.getScene().getWindow();
+        escenario.setScene(new Scene(vista));
+        escenario.setTitle(titulo);
+        escenario.sizeToScene();
+        escenario.centerOnScreen();
+        return loader.getController();
     }
 }

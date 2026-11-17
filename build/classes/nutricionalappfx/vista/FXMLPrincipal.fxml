@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="650.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nutricionalappfx.controlador.FXMLPrincipalController">
+<AnchorPane prefHeight="560.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nutricionalappfx.controlador.FXMLPrincipalController">
    <children>
-      <Label fx:id="lbNombre" layoutX="244.0" layoutY="129.0" text="Label">
+      <Label layoutX="40.0" layoutY="30.0" text="Menú principal">
          <font>
-            <Font size="21.0" />
-         </font></Label>
-      <Label fx:id="lbRol" layoutX="244.0" layoutY="212.0" text="Label" />
+            <Font size="26.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbNombre" layoutX="40.0" layoutY="80.0" text="Bienvenido">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbRol" layoutX="40.0" layoutY="110.0" text="Rol" />
+      <VBox alignment="CENTER" layoutX="270.0" layoutY="170.0" spacing="15.0">
+         <children>
+            <Button fx:id="btnColaboradores" mnemonicParsing="false" onAction="#hableBtnColaboradores" prefHeight="45.0" prefWidth="260.0" text="Administrador de colaboradores" />
+            <Button fx:id="btnPacientes" mnemonicParsing="false" onAction="#hableBtnPacientes" prefHeight="45.0" prefWidth="260.0" text="Administrador de pacientes" />
+            <Button fx:id="btnCitas" mnemonicParsing="false" onAction="#hableBtnCitas" prefHeight="45.0" prefWidth="260.0" text="Administrador de citas" />
+            <Button fx:id="btnDietas" mnemonicParsing="false" onAction="#hableBtnDietas" prefHeight="45.0" prefWidth="260.0" text="Administrador de dietas" />
+            <Button fx:id="btnConsultas" mnemonicParsing="false" onAction="#hableBtnConsultas" prefHeight="45.0" prefWidth="260.0" text="Consultas" />
+         </children>
+      </VBox>
+      <Button layoutX="660.0" layoutY="500.0" mnemonicParsing="false" onAction="#hableBtnCerrarSesion" prefWidth="110.0" text="Cerrar sesión" />
    </children>
 </AnchorPane>
