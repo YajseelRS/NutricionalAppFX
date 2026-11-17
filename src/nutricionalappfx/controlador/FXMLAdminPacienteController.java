@@ -89,7 +89,12 @@ public class FXMLAdminPacienteController implements Initializable {
 
     @FXML
     private void hableBtnRegresar(ActionEvent event) {
-        ((Stage) tfBusqueda.getScene().getWindow()).close();
+        try {
+            Utilidades.cambiarEscena(tfBusqueda, "/nutricionalappfx/vista/FXMLPrincipal.fxml", "Menú principal");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error", "No se pudo volver al menú principal.", Alert.AlertType.ERROR);
+        }
     }
 
     @FXML
@@ -138,7 +143,7 @@ public class FXMLAdminPacienteController implements Initializable {
             }
         }
     }
-    
+        
     private void abrirFormulario(Paciente pacienteEdicion) {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -159,5 +164,5 @@ public class FXMLAdminPacienteController implements Initializable {
             Utilidades.mostrarAlertaSimple("Error",
                     "No se pudo abrir el formulario de paciente.", Alert.AlertType.ERROR);
         }
-    }
+    }      
 }

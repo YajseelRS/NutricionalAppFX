@@ -4,14 +4,18 @@
  */
 package nutricionalappfx.controlador;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import nutricionalappfx.dominio.pojo.Colaborador;
+import nutricionalappfx.utilidades.Sesion;
+import nutricionalappfx.utilidades.Utilidades;
 
 /**
  * FXML Controller class
@@ -19,6 +23,10 @@ import nutricionalappfx.dominio.pojo.Colaborador;
  * @author chris
  */
 public class FXMLPrincipalController implements Initializable {
+    
+    private static final int ROL_ADMINISTRADOR = 1;
+    private static final int ROL_NUTRIOLOGO = 2;
+    private static final int ROL_INVITADO = 3;
 
     private Colaborador colaborador;
     @FXML
@@ -38,42 +46,69 @@ public class FXMLPrincipalController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        colaborador = Sesion.getColaborador();
+        if (colaborador != null) {
+            lbNombre.setText("Bienvenido(a) " + colaborador.getNombre() + " " + colaborador.getApellidoPaterno());
+            lbRol.setText("Rol: " + colaborador.getRol());
+            aplicarPermisos();
+        }
     }    
     
-    public void inicializarInformacion(Colaborador colaborador){
-        this.colaborador = colaborador;
-        mostrarInfoPantalla();
+    private void aplicarPermisos() {
+        int rol = colaborador.getIdRol();
+        mostrar(btnColaboradores, rol == ROL_ADMINISTRADOR);
+        mostrar(btnPacientes, rol == ROL_ADMINISTRADOR || rol == ROL_NUTRIOLOGO);
+        mostrar(btnCitas, rol == ROL_ADMINISTRADOR || rol == ROL_NUTRIOLOGO);
+        mostrar(btnDietas, rol == ROL_ADMINISTRADOR || rol == ROL_NUTRIOLOGO);
+        mostrar(btnConsultas, true); // todos los roles
     }
     
-    public void mostrarInfoPantalla(){
-        if(colaborador != null){
-            lbNombre.setText("Bienvenido "+colaborador.toString());
-            lbRol.setText("Rol: "+colaborador.getRol());
-        } 
+    private void mostrar(Button boton, boolean visible) {
+        boton.setVisible(visible);
+        boton.setManaged(visible);
+    }
+    
+    private void irA(String rutaFxml, String titulo) {
+        try {
+            Utilidades.cambiarEscena(lbNombre, rutaFxml, titulo);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error", "No se pudo abrir la pantalla.", Alert.AlertType.ERROR);
+        }
+    }
+    
+    private void proximamente(String modulo) {
+        Utilidades.mostrarAlertaSimple(modulo, "Este módulo todavía no está disponible.", Alert.AlertType.INFORMATION);
     }
 
     @FXML
     private void hableBtnColaboradores(ActionEvent event) {
+        proximamente("Administrador de colaboradores");
     }
 
     @FXML
     private void hableBtnPacientes(ActionEvent event) {
+        irA("/nutricionalappfx/vista/FXMLAdminPaciente.fxml", "Administrador de pacientes");
     }
 
     @FXML
     private void hableBtnCitas(ActionEvent event) {
+        proximamente("Administrador de citas");
     }
 
     @FXML
     private void hableBtnDietas(ActionEvent event) {
+        proximamente("Administrador de dietas");
     }
 
     @FXML
     private void hableBtnConsultas(ActionEvent event) {
+        proximamente("Consultas");
     }
 
     @FXML
     private void hableBtnCerrarSesion(ActionEvent event) {
+        Sesion.cerrar();
+        irA("/nutricionalappfx/vista/FXMLAutenticacion.fxml", "Iniciar sesión");
     }
 }

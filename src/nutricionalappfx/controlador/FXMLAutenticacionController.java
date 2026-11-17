@@ -19,6 +19,7 @@ import nutricionalappfx.dominio.AutenticacionDM;
 import nutricionalappfx.dominio.pojo.Autenticacion;
 import nutricionalappfx.dominio.pojo.Colaborador;
 import nutricionalappfx.modelo.dao.AutenticacionDAO;
+import nutricionalappfx.utilidades.Sesion;
 import nutricionalappfx.utilidades.Utilidades;
 
 public class FXMLAutenticacionController implements Initializable {
@@ -46,8 +47,8 @@ public class FXMLAutenticacionController implements Initializable {
         try {
             Autenticacion respuesta = autenticacionDM.verificarCredencialesColaborador(noPersonal, password);
             if (respuesta.isCredencialesCorrectas() && respuesta.isActivo()) {
-                Utilidades.mostrarAlertaSimple("Credenciales correctas", respuesta.getMensaje(), Alert.AlertType.INFORMATION);
-                irPantallaPrincipal(respuesta.getColaborador());
+                Sesion.iniciar(respuesta.getColaborador());
+                irAlMenuPrincipal();
             } else {
                 Utilidades.mostrarAlertaSimple("Lo sentimos :(", respuesta.getMensaje(), Alert.AlertType.WARNING);
             }
@@ -71,21 +72,12 @@ public class FXMLAutenticacionController implements Initializable {
         return esValido;
     }
     
-    private void irPantallaPrincipal(Colaborador colaborador){
-        try{
-            Stage escenario = (Stage) tfNoPersonal.getScene().getWindow();
-        
-        FXMLLoader loader = new FXMLLoader(NutricionalAppFX.class.getResource("vista/FXMLPrincipal.fxml"));
-        Parent vista = loader.load();
-        FXMLPrincipalController controlador = loader.getController();
-        controlador.inicializarInformacion(colaborador);
-        Scene escena = new Scene(vista);
-        escenario.setScene(escena);
-        escenario.setTitle("Control Nutricional");
-        escenario.show();
-        
-        }catch (IOException ex){
-            ex.printStackTrace();
+    private void irAlMenuPrincipal() {
+        try {
+            Utilidades.cambiarEscena(tfNoPersonal, "/nutricionalappfx/vista/FXMLPrincipal.fxml", "Menú principal");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error", "No se pudo abrir el menú principal.", Alert.AlertType.ERROR);
         }
     }
 }
