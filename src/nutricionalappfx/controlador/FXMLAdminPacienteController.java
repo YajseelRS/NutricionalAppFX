@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package nutricionalappfx.controlador;
 
 import java.io.IOException;
@@ -29,11 +25,6 @@ import nutricionalappfx.dominio.pojo.Paciente;
 import nutricionalappfx.modelo.dao.PacienteDAO;
 import nutricionalappfx.utilidades.Utilidades;
 
-/**
- * FXML Controller class
- *
- * @author chris
- */
 public class FXMLAdminPacienteController implements Initializable {
 
     @FXML
@@ -52,49 +43,24 @@ public class FXMLAdminPacienteController implements Initializable {
     private TableColumn<Paciente, String> colTelefono;
     @FXML
     private TableColumn<Paciente, String> colCorreo;
-    
+
     private ObservableList<Paciente> pacientes;
 
-    /**
-     * Initializes the controller class.
-     */
+    private int idNutriologo;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
         cargarPacientes("");
-    }    
-    
-    private void configurarTabla() {
-        colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigoPaciente"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colApellidoPaterno.setCellValueFactory(new PropertyValueFactory<>("apellidoPaterno"));
-        colApellidoMaterno.setCellValueFactory(new PropertyValueFactory<>("apellidoMaterno"));
-        colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
-        colCorreo.setCellValueFactory(new PropertyValueFactory<>("correo"));
     }
-    
-    private void cargarPacientes(String texto) {
-        try {
-            List<Paciente> lista = PacienteDAO.buscarPacientes(texto);
-            pacientes = FXCollections.observableArrayList(lista);
-            tvPacientes.setItems(pacientes);
-            if (lista.isEmpty() && !texto.isEmpty()) {
-                Utilidades.mostrarAlertaSimple("Sin resultados",
-                        "No se encontraron pacientes con \"" + texto + "\".", Alert.AlertType.INFORMATION);
-            }
-        } catch (RuntimeException e) {
-            Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
-        }
+
+    public void recibirInformacion(int idNutriologo) {
+        this.idNutriologo = idNutriologo;
     }
 
     @FXML
     private void hableBtnRegresar(ActionEvent event) {
-        try {
-            Utilidades.cambiarEscena(tfBusqueda, "/nutricionalappfx/vista/FXMLPrincipal.fxml", "Menú principal");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Utilidades.mostrarAlertaSimple("Error", "No se pudo volver al menú principal.", Alert.AlertType.ERROR);
-        }
+        ((Stage) tfBusqueda.getScene().getWindow()).close();
     }
 
     @FXML
@@ -130,7 +96,7 @@ public class FXMLAdminPacienteController implements Initializable {
         confirmacion.setTitle("Confirmar baja");
         confirmacion.setHeaderText(null);
         confirmacion.setContentText("¿Dar de baja a " + seleccionado.getNombre() + " "
-                + seleccionado.getApellidoPaterno() + " (" + seleccionado.getCodigoPaciente() + ")?");
+                + seleccionado.getApellidoPaterno() + " (" + seleccionado.getCodigo() + ")?");
         Optional<ButtonType> respuesta = confirmacion.showAndWait();
         if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
             try {
@@ -143,14 +109,37 @@ public class FXMLAdminPacienteController implements Initializable {
             }
         }
     }
-        
+
+    private void configurarTabla() {
+        colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colApellidoPaterno.setCellValueFactory(new PropertyValueFactory<>("apellidoPaterno"));
+        colApellidoMaterno.setCellValueFactory(new PropertyValueFactory<>("apellidoMaterno"));
+        colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        colCorreo.setCellValueFactory(new PropertyValueFactory<>("correo"));
+    }
+
+    private void cargarPacientes(String texto) {
+        try {
+            List<Paciente> lista = PacienteDAO.buscarPacientes(texto);
+            pacientes = FXCollections.observableArrayList(lista);
+            tvPacientes.setItems(pacientes);
+            if (lista.isEmpty() && !texto.isEmpty()) {
+                Utilidades.mostrarAlertaSimple("Sin resultados",
+                        "No se encontraron pacientes con \"" + texto + "\".", Alert.AlertType.INFORMATION);
+            }
+        } catch (RuntimeException e) {
+            Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
     private void abrirFormulario(Paciente pacienteEdicion) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/nutricionalappfx/vista/FXMLFormularioPaciente.fxml"));
             Parent vista = loader.load();
             FXMLFormularioPacienteController controlador = loader.getController();
-            controlador.inicializarFormulario(pacienteEdicion);
+            controlador.inicializarFormulario(pacienteEdicion, idNutriologo);
 
             Stage escenario = new Stage();
             escenario.setScene(new Scene(vista));
@@ -164,5 +153,5 @@ public class FXMLAdminPacienteController implements Initializable {
             Utilidades.mostrarAlertaSimple("Error",
                     "No se pudo abrir el formulario de paciente.", Alert.AlertType.ERROR);
         }
-    }      
+    }
 }

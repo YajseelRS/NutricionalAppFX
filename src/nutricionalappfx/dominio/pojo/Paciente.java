@@ -11,36 +11,36 @@ package nutricionalappfx.dominio.pojo;
 public class Paciente {
     
     private int idPaciente;
-    private String codigoPaciente;
+    private String codigo;
     private String nombre;
     private String apellidoPaterno;
     private String apellidoMaterno;
     private String fechaNacimiento;
+    private int altura;
+    private char sexo;           
+    private float pesoInicial;
     private String telefono;
-    private String sexo;           
-    private double altura;
-    private double pesoInicial;
     private String correo;
-    private int idEstatus;
+    private int idNutriologo;
 
     public Paciente() {
     }
 
-    public Paciente(int idPaciente, String codigoPaciente, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, String telefono, String sexo, double altura, double pesoInicial, String correo, int idEstatus) {
+    public Paciente(int idPaciente, String codigo, String nombre, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, int altura, char sexo, float pesoInicial, String telefono, String correo, int idNutriologo) {
         this.idPaciente = idPaciente;
-        this.codigoPaciente = codigoPaciente;
+        this.codigo = codigo;
         this.nombre = nombre;
         this.apellidoPaterno = apellidoPaterno;
         this.apellidoMaterno = apellidoMaterno;
         this.fechaNacimiento = fechaNacimiento;
-        this.telefono = telefono;
-        this.sexo = sexo;
         this.altura = altura;
+        this.sexo = sexo;
         this.pesoInicial = pesoInicial;
+        this.telefono = telefono;
         this.correo = correo;
-        this.idEstatus = idEstatus;
+        this.idNutriologo = idNutriologo;
     }
-    
+
     public int getIdPaciente() {
         return idPaciente;
     }
@@ -49,12 +49,12 @@ public class Paciente {
         this.idPaciente = idPaciente;
     }
 
-    public String getCodigoPaciente() {
-        return codigoPaciente;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public void setCodigoPaciente(String codigoPaciente) {
-        this.codigoPaciente = codigoPaciente;
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public String getNombre() {
@@ -89,36 +89,36 @@ public class Paciente {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+    public int getAltura() {
+        return altura;
+    }
+
+    public void setAltura(int altura) {
+        this.altura = altura;
+    }
+
+    public char getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(char sexo) {
+        this.sexo = sexo;
+    }
+
+    public float getPesoInicial() {
+        return pesoInicial;
+    }
+
+    public void setPesoInicial(float pesoInicial) {
+        this.pesoInicial = pesoInicial;
+    }
+
     public String getTelefono() {
         return telefono;
     }
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
-    public double getAltura() {
-        return altura;
-    }
-
-    public void setAltura(double altura) {
-        this.altura = altura;
-    }
-
-    public double getPesoInicial() {
-        return pesoInicial;
-    }
-
-    public void setPesoInicial(double pesoInicial) {
-        this.pesoInicial = pesoInicial;
     }
 
     public String getCorreo() {
@@ -129,11 +129,13 @@ public class Paciente {
         this.correo = correo;
     }
 
-    public int getIdEstatus() {
-        return idEstatus;
+    public int getIdNutriologo() {
+        return idNutriologo;
     }
 
-    public void setIdEstatus(int idEstatus) {
-        this.idEstatus = idEstatus;
-    }    
+    public void setIdNutriologo(int idNutriologo) {
+        this.idNutriologo = idNutriologo;
+    }
+
+    
 }

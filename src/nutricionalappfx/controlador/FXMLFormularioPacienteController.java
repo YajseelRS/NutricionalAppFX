@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package nutricionalappfx.controlador;
 
 import java.net.URL;
@@ -19,11 +15,7 @@ import javafx.stage.Stage;
 import nutricionalappfx.dominio.pojo.Paciente;
 import nutricionalappfx.modelo.dao.PacienteDAO;
 import nutricionalappfx.utilidades.Utilidades;
-/**
- * FXML Controller class
- *
- * @author chris
- */
+
 public class FXMLFormularioPacienteController implements Initializable {
 
     @FXML
@@ -50,20 +42,17 @@ public class FXMLFormularioPacienteController implements Initializable {
     private TextField tfPesoInicial;
     @FXML
     private TextField tfCorreo;
-    
-    private Paciente pacienteEdicion;
 
-    /**
-     * Initializes the controller class.
-     */
+    private Paciente pacienteEdicion;
+    private int idNutriologo;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+    }
 
     @FXML
     private void hableBtnCancelar(ActionEvent event) {
-       ((Stage) tfNombre.getScene().getWindow()).close();
+        cerrarVentana();
     }
 
     @FXML
@@ -80,10 +69,11 @@ public class FXMLFormularioPacienteController implements Initializable {
         paciente.setApellidoMaterno(materno.isEmpty() ? null : materno);
         paciente.setFechaNacimiento(dpFechaNacimiento.getValue().toString());
         paciente.setTelefono(tfTelefono.getText().trim());
-        paciente.setSexo(rbFemenino.isSelected() ? "F" : "M");
-        paciente.setAltura(Double.parseDouble(tfAltura.getText().trim()));
-        paciente.setPesoInicial(Double.parseDouble(tfPesoInicial.getText().trim()));
+        paciente.setSexo(rbFemenino.isSelected() ? 'F' : 'M');
+        paciente.setAltura(Integer.parseInt(tfAltura.getText().trim()));
+        paciente.setPesoInicial(Float.parseFloat(tfPesoInicial.getText().trim()));
         paciente.setCorreo(tfCorreo.getText().trim());
+        paciente.setIdNutriologo(idNutriologo);
 
         try {
             if (pacienteEdicion == null) {
@@ -101,7 +91,7 @@ public class FXMLFormularioPacienteController implements Initializable {
             Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-    
+
     private String validarCampos() {
         if (tfNombre.getText().trim().isEmpty()) {
             return "El nombre es obligatorio.";
@@ -120,15 +110,15 @@ public class FXMLFormularioPacienteController implements Initializable {
             return "Selecciona el sexo del paciente.";
         }
         try {
-            double altura = Double.parseDouble(tfAltura.getText().trim());
-            if (altura <= 0 || altura >= 3) {
-                return "La altura debe estar en metros (por ejemplo 1.65).";
+            int altura = Integer.parseInt(tfAltura.getText().trim());
+            if (altura < 40 || altura > 250) {
+                return "La altura debe estar en centímetros (por ejemplo 165).";
             }
         } catch (NumberFormatException e) {
-            return "La altura debe ser un número (por ejemplo 1.65).";
+            return "La altura debe ser un número entero en centímetros (por ejemplo 165).";
         }
         try {
-            double peso = Double.parseDouble(tfPesoInicial.getText().trim());
+            float peso = Float.parseFloat(tfPesoInicial.getText().trim());
             if (peso <= 0 || peso >= 1000) {
                 return "El peso debe ser mayor a 0 y menor a 1000 kg.";
             }
@@ -140,21 +130,22 @@ public class FXMLFormularioPacienteController implements Initializable {
         }
         return null;
     }
-    
+
     private void cerrarVentana() {
         ((Stage) tfNombre.getScene().getWindow()).close();
     }
-    
-    public void inicializarFormulario(Paciente paciente) {
+
+    public void inicializarFormulario(Paciente paciente, int idNutriologo) {
         this.pacienteEdicion = paciente;
+        this.idNutriologo = idNutriologo;
         if (paciente != null) {
-            tfCodigo.setText(paciente.getCodigoPaciente());
+            tfCodigo.setText(paciente.getCodigo());
             tfNombre.setText(paciente.getNombre());
             tfApellidoPaterno.setText(paciente.getApellidoPaterno());
             tfApellidoMaterno.setText(paciente.getApellidoMaterno());
             dpFechaNacimiento.setValue(LocalDate.parse(paciente.getFechaNacimiento()));
             tfTelefono.setText(paciente.getTelefono());
-            if ("F".equals(paciente.getSexo())) {
+            if (paciente.getSexo() == 'F') {
                 rbFemenino.setSelected(true);
             } else {
                 rbMasculino.setSelected(true);
