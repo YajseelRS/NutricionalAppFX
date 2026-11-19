@@ -25,6 +25,7 @@
             <file>file:/C:/NutricionalAppFX/src/nutricionalappfx/vista/FXMLAutenticacion.fxml</file>
             <file>file:/C:/NutricionalAppFX/src/nutricionalappfx/dominio/pojo/OperacionResultado.java</file>
             <file>file:/C:/NutricionalAppFX/src/nutricionalappfx/dominio/contrato/IAutenticacionRepositorio.java</file>
+            <file>file:/C:/NutricionalAppFX/src/nutricionalappfx/modelo/dao/AutenticacionDAO.java</file>
         </group>
     </open-files>
 </project-private>
