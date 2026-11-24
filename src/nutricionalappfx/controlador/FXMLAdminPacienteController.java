@@ -26,32 +26,39 @@ import nutricionalappfx.modelo.dao.PacienteDAO;
 import nutricionalappfx.utilidades.Utilidades;
 
 public class FXMLAdminPacienteController implements Initializable {
-
+    
+    private int idNutriologo;
     @FXML
-    private TextField tfBusqueda;
+    private TextField tfBuscarPaciente;
     @FXML
     private TableView<Paciente> tvPacientes;
     @FXML
-    private TableColumn<Paciente, String> colCodigo;
+    private TableColumn colCodigo;
     @FXML
-    private TableColumn<Paciente, String> colNombre;
+    private TableColumn colNombre;
     @FXML
-    private TableColumn<Paciente, String> colApellidoPaterno;
+    private TableColumn colApPaterno;
     @FXML
-    private TableColumn<Paciente, String> colApellidoMaterno;
+    private TableColumn colApMaterno;
     @FXML
-    private TableColumn<Paciente, String> colTelefono;
+    private TableColumn colFechaNacimiento;
     @FXML
-    private TableColumn<Paciente, String> colCorreo;
-
-    private ObservableList<Paciente> pacientes;
-
-    private int idNutriologo;
+    private TableColumn colPeso;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        configurarTabla();
-        cargarPacientes("");
+        configurarColumnasTabla();
+        
+        tvPacientes.setItems(value);
+    }
+    
+    private void configurarColumnasTabla(){
+        colCodigo.setCellValueFactory(new PropertyValueFactory("codigo"));
+        colNombre.setCellValueFactory(new PropertyValueFactory("nombre"));
+        colApPaterno.setCellValueFactory(new PropertyValueFactory("apellidoPaterno"));
+        colApMaterno.setCellValueFactory(new PropertyValueFactory("apellidoMaterno"));
+        colFechaNacimiento.setCellValueFactory(new PropertyValueFactory("fechaNacimiento"));
+        colPeso.setCellValueFactory(new PropertyValueFactory("peso"));
     }
 
     public void recibirInformacion(int idNutriologo) {
@@ -63,12 +70,10 @@ public class FXMLAdminPacienteController implements Initializable {
         ((Stage) tfBusqueda.getScene().getWindow()).close();
     }
 
-    @FXML
     private void hableBtnBuscar(ActionEvent event) {
         cargarPacientes(tfBusqueda.getText().trim());
     }
 
-    @FXML
     private void hableBtnAlta(ActionEvent event) {
         abrirFormulario(null);
     }
@@ -84,7 +89,6 @@ public class FXMLAdminPacienteController implements Initializable {
         abrirFormulario(seleccionado);
     }
 
-    @FXML
     private void hableBtnBaja(ActionEvent event) {
         Paciente seleccionado = tvPacientes.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
@@ -153,5 +157,13 @@ public class FXMLAdminPacienteController implements Initializable {
             Utilidades.mostrarAlertaSimple("Error",
                     "No se pudo abrir el formulario de paciente.", Alert.AlertType.ERROR);
         }
+    }
+
+    @FXML
+    private void hableBtnRegistrar(ActionEvent event) {
+    }
+
+    @FXML
+    private void hableBtnEliminar(ActionEvent event) {
     }
 }

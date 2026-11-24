@@ -14,11 +14,13 @@ import nutricionalappfx.dominio.pojo.OperacionResultado;
  */
 public interface IPacienteRepositorio {
     
-    public List<Paciente> obtenerPacientesNutriologo(int idNutriologo);
+    public List<Paciente> obtenerPacientesNutriologo(int idNutriologo)throws RuntimeException;
     
-    public OperacionResultado registrarPaciente();
+    public OperacionResultado registrarPaciente(Paciente paciente)throws RuntimeException;
     
-    public OperacionResultado editarPaciente(Paciente paciente);
+    public OperacionResultado editarPaciente(Paciente paciente)throws RuntimeException;
     
-    public OperacionResultado eliminarPaciente(int idPaciente);
+    public OperacionResultado eliminarPaciente(int idPaciente)throws RuntimeException;
+    
+    public boolean verificarExistenciaCodigoPaciente(String codigo)throws RuntimeException;
 }
