@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,13 +23,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import nutricionalappfx.dominio.PacienteDM;
+import nutricionalappfx.dominio.pojo.OperacionResultado;
 import nutricionalappfx.dominio.pojo.Paciente;
 import nutricionalappfx.modelo.dao.PacienteDAO;
 import nutricionalappfx.utilidades.Utilidades;
 
 public class FXMLAdminPacienteController implements Initializable {
-    
+
     private int idNutriologo;
+    private ObservableList<Paciente> pacientes;
+    private final PacienteDM pacienteDM = new PacienteDM(new PacienteDAO());
+
     @FXML
     private TextField tfBuscarPaciente;
     @FXML
@@ -48,33 +55,59 @@ public class FXMLAdminPacienteController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarColumnasTabla();
-        
-        tvPacientes.setItems(value);
+        // La tabla se llena en recibirInformacion(), cuando ya se conoce el nutriólogo.
     }
-    
-    private void configurarColumnasTabla(){
+
+    private void configurarColumnasTabla() {
         colCodigo.setCellValueFactory(new PropertyValueFactory("codigo"));
         colNombre.setCellValueFactory(new PropertyValueFactory("nombre"));
         colApPaterno.setCellValueFactory(new PropertyValueFactory("apellidoPaterno"));
         colApMaterno.setCellValueFactory(new PropertyValueFactory("apellidoMaterno"));
         colFechaNacimiento.setCellValueFactory(new PropertyValueFactory("fechaNacimiento"));
-        colPeso.setCellValueFactory(new PropertyValueFactory("peso"));
+        colPeso.setCellValueFactory(new PropertyValueFactory("pesoInicial")); // antes decía "peso"
     }
 
     public void recibirInformacion(int idNutriologo) {
         this.idNutriologo = idNutriologo;
+        cargarPacientes();
+    }
+
+    private void cargarPacientes() {
+        try {
+            List<Paciente> lista = pacienteDM.obtenerPacientesNutriologo(idNutriologo);
+            pacientes = FXCollections.observableArrayList(lista);
+            configurarBusqueda();
+        } catch (RuntimeException e) {
+            Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    // Filtra por código o nombre completo mientras se escribe (el FXML solo tiene el TextField).
+    private void configurarBusqueda() {
+        FilteredList<Paciente> filtrados = new FilteredList<>(pacientes, p -> true);
+        tfBuscarPaciente.textProperty().addListener((obs, anterior, nuevo) -> {
+            String texto = nuevo == null ? "" : nuevo.trim().toLowerCase();
+            filtrados.setPredicate(p -> {
+                if (texto.isEmpty()) {
+                    return true;
+                }
+                String materno = p.getApellidoMaterno() == null ? "" : p.getApellidoMaterno();
+                String completo = (p.getNombre() + " " + p.getApellidoPaterno() + " " + materno).toLowerCase();
+                return p.getCodigo().toLowerCase().contains(texto) || completo.contains(texto);
+            });
+        });
+        SortedList<Paciente> ordenados = new SortedList<>(filtrados);
+        ordenados.comparatorProperty().bind(tvPacientes.comparatorProperty());
+        tvPacientes.setItems(ordenados);
     }
 
     @FXML
     private void hableBtnRegresar(ActionEvent event) {
-        ((Stage) tfBusqueda.getScene().getWindow()).close();
+        ((Stage) tvPacientes.getScene().getWindow()).close();
     }
 
-    private void hableBtnBuscar(ActionEvent event) {
-        cargarPacientes(tfBusqueda.getText().trim());
-    }
-
-    private void hableBtnAlta(ActionEvent event) {
+    @FXML
+    private void hableBtnRegistrar(ActionEvent event) {
         abrirFormulario(null);
     }
 
@@ -89,7 +122,8 @@ public class FXMLAdminPacienteController implements Initializable {
         abrirFormulario(seleccionado);
     }
 
-    private void hableBtnBaja(ActionEvent event) {
+    @FXML
+    private void hableBtnEliminar(ActionEvent event) {
         Paciente seleccionado = tvPacientes.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             Utilidades.mostrarAlertaSimple("Selecciona un paciente",
@@ -104,36 +138,14 @@ public class FXMLAdminPacienteController implements Initializable {
         Optional<ButtonType> respuesta = confirmacion.showAndWait();
         if (respuesta.isPresent() && respuesta.get() == ButtonType.OK) {
             try {
-                PacienteDAO.darDeBajaPaciente(seleccionado.getIdPaciente());
-                Utilidades.mostrarAlertaSimple("Baja realizada",
-                        "El paciente fue dado de baja.", Alert.AlertType.INFORMATION);
-                cargarPacientes(tfBusqueda.getText().trim());
+                OperacionResultado resultado = pacienteDM.eliminarPaciente(seleccionado.getIdPaciente());
+                Utilidades.mostrarAlertaSimple(resultado.isError() ? "Error" : "Baja realizada",
+                        resultado.getMensajes(),
+                        resultado.isError() ? Alert.AlertType.ERROR : Alert.AlertType.INFORMATION);
+                cargarPacientes();
             } catch (RuntimeException e) {
                 Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
             }
-        }
-    }
-
-    private void configurarTabla() {
-        colCodigo.setCellValueFactory(new PropertyValueFactory<>("codigo"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colApellidoPaterno.setCellValueFactory(new PropertyValueFactory<>("apellidoPaterno"));
-        colApellidoMaterno.setCellValueFactory(new PropertyValueFactory<>("apellidoMaterno"));
-        colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
-        colCorreo.setCellValueFactory(new PropertyValueFactory<>("correo"));
-    }
-
-    private void cargarPacientes(String texto) {
-        try {
-            List<Paciente> lista = PacienteDAO.buscarPacientes(texto);
-            pacientes = FXCollections.observableArrayList(lista);
-            tvPacientes.setItems(pacientes);
-            if (lista.isEmpty() && !texto.isEmpty()) {
-                Utilidades.mostrarAlertaSimple("Sin resultados",
-                        "No se encontraron pacientes con \"" + texto + "\".", Alert.AlertType.INFORMATION);
-            }
-        } catch (RuntimeException e) {
-            Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -151,19 +163,11 @@ public class FXMLAdminPacienteController implements Initializable {
             escenario.initModality(Modality.APPLICATION_MODAL);
             escenario.showAndWait();
 
-            cargarPacientes(tfBusqueda.getText().trim());
+            cargarPacientes();
         } catch (IOException e) {
             e.printStackTrace();
             Utilidades.mostrarAlertaSimple("Error",
                     "No se pudo abrir el formulario de paciente.", Alert.AlertType.ERROR);
         }
-    }
-
-    @FXML
-    private void hableBtnRegistrar(ActionEvent event) {
-    }
-
-    @FXML
-    private void hableBtnEliminar(ActionEvent event) {
     }
 }

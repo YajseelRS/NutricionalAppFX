@@ -1,13 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package nutricionalappfx.dominio;
 
-/**
- *
- * @author chris
- */
+import java.util.List;
+import nutricionalappfx.dominio.contrato.IPacienteRepositorio;
+import nutricionalappfx.dominio.pojo.OperacionResultado;
+import nutricionalappfx.dominio.pojo.Paciente;
+
 public class PacienteDM {
-    
+
+    private final IPacienteRepositorio contrato;
+
+    public PacienteDM(IPacienteRepositorio contrato) {
+        this.contrato = contrato;
+    }
+
+    public List<Paciente> obtenerPacientesNutriologo(int idNutriologo) throws RuntimeException {
+        return contrato.obtenerPacientesNutriologo(idNutriologo);
+    }
+
+    public OperacionResultado registrarPaciente(Paciente paciente) throws RuntimeException {
+        return contrato.registrarPaciente(paciente);
+    }
+
+    public OperacionResultado editarPaciente(Paciente paciente) throws RuntimeException {
+        return contrato.editarPaciente(paciente);
+    }
+
+    public OperacionResultado eliminarPaciente(int idPaciente) throws RuntimeException {
+        return contrato.eliminarPaciente(idPaciente);
+    }
+
+    public boolean verificarExistenciaCodigoPaciente(String codigo) throws RuntimeException {
+        return contrato.verificarExistenciaCodigoPaciente(codigo);
+    }
 }

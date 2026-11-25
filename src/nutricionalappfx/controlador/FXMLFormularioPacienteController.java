@@ -12,6 +12,8 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
+import nutricionalappfx.dominio.PacienteDM;
+import nutricionalappfx.dominio.pojo.OperacionResultado;
 import nutricionalappfx.dominio.pojo.Paciente;
 import nutricionalappfx.modelo.dao.PacienteDAO;
 import nutricionalappfx.utilidades.Utilidades;
@@ -45,6 +47,7 @@ public class FXMLFormularioPacienteController implements Initializable {
 
     private Paciente pacienteEdicion;
     private int idNutriologo;
+    private final PacienteDM pacienteDM = new PacienteDM(new PacienteDAO());
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -76,17 +79,19 @@ public class FXMLFormularioPacienteController implements Initializable {
         paciente.setIdNutriologo(idNutriologo);
 
         try {
+            OperacionResultado resultado;
             if (pacienteEdicion == null) {
-                PacienteDAO.insertarPaciente(paciente);
-                Utilidades.mostrarAlertaSimple("Paciente registrado",
-                        "El paciente fue registrado correctamente.", Alert.AlertType.INFORMATION);
+                resultado = pacienteDM.registrarPaciente(paciente);
             } else {
                 paciente.setIdPaciente(pacienteEdicion.getIdPaciente());
-                PacienteDAO.editarPaciente(paciente);
-                Utilidades.mostrarAlertaSimple("Paciente actualizado",
-                        "Los datos del paciente fueron actualizados.", Alert.AlertType.INFORMATION);
+                resultado = pacienteDM.editarPaciente(paciente);
             }
-            cerrarVentana();
+            Utilidades.mostrarAlertaSimple(resultado.isError() ? "Error" : "Operación exitosa",
+                    resultado.getMensajes(),
+                    resultado.isError() ? Alert.AlertType.ERROR : Alert.AlertType.INFORMATION);
+            if (!resultado.isError()) {
+                cerrarVentana();
+            }
         } catch (RuntimeException e) {
             Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
         }
