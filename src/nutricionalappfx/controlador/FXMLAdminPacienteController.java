@@ -33,7 +33,7 @@ public class FXMLAdminPacienteController implements Initializable {
 
     private int idNutriologo;
     private ObservableList<Paciente> pacientes;
-    private final PacienteDM pacienteDM = new PacienteDM(new PacienteDAO());
+    private PacienteDM pacienteDM;
 
     @FXML
     private TextField tfBuscarPaciente;
@@ -54,8 +54,9 @@ public class FXMLAdminPacienteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        pacienteDM = new PacienteDM(new PacienteDAO());
         configurarColumnasTabla();
-        // La tabla se llena en recibirInformacion(), cuando ya se conoce el nutriólogo.
+        cargarInformacionTabla();
     }
 
     private void configurarColumnasTabla() {
@@ -64,12 +65,28 @@ public class FXMLAdminPacienteController implements Initializable {
         colApPaterno.setCellValueFactory(new PropertyValueFactory("apellidoPaterno"));
         colApMaterno.setCellValueFactory(new PropertyValueFactory("apellidoMaterno"));
         colFechaNacimiento.setCellValueFactory(new PropertyValueFactory("fechaNacimiento"));
-        colPeso.setCellValueFactory(new PropertyValueFactory("pesoInicial")); // antes decía "peso"
+        colPeso.setCellValueFactory(new PropertyValueFactory("pesoInicial"));
+    }
+    
+    private void cargarInformacionTabla() {
+        try {
+            pacientes = FXCollections.observableArrayList();
+            List<Paciente> pacientesBD = pacienteDM.obtenerPacientesNutriologo(idNutriologo);
+            pacientes.addAll(pacientesBD);
+            tvPacientes.setItems(pacientes);
+        } catch (RuntimeException e){
+            Utilidades.mostrarAlertaSimple("Error", e.getMessage(), Alert.AlertType.ERROR);
+            cerrarVentana();
+        }
     }
 
     public void recibirInformacion(int idNutriologo) {
         this.idNutriologo = idNutriologo;
         cargarPacientes();
+    }
+    
+    private void cerrarVentana(){
+        ((Stage) tvPacientes.getScene().getWindow()).close();
     }
 
     private void cargarPacientes() {
@@ -82,7 +99,6 @@ public class FXMLAdminPacienteController implements Initializable {
         }
     }
 
-    // Filtra por código o nombre completo mientras se escribe (el FXML solo tiene el TextField).
     private void configurarBusqueda() {
         FilteredList<Paciente> filtrados = new FilteredList<>(pacientes, p -> true);
         tfBuscarPaciente.textProperty().addListener((obs, anterior, nuevo) -> {

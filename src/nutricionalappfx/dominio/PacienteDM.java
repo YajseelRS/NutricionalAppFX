@@ -7,15 +7,18 @@ import nutricionalappfx.dominio.pojo.Paciente;
 
 public class PacienteDM {
 
-    private final IPacienteRepositorio contrato;
+    private IPacienteRepositorio contrato;
 
     public PacienteDM(IPacienteRepositorio contrato) {
         this.contrato = contrato;
     }
 
     public List<Paciente> obtenerPacientesNutriologo(int idNutriologo) throws RuntimeException {
+        if(idNutriologo < 0){
+            throw new RuntimeException("Error al obtener la informacion.");
+        }
         return contrato.obtenerPacientesNutriologo(idNutriologo);
-    }
+    } 
 
     public OperacionResultado registrarPaciente(Paciente paciente) throws RuntimeException {
         return contrato.registrarPaciente(paciente);

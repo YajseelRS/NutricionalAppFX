@@ -55,7 +55,6 @@ public class PacienteDAO implements IPacienteRepositorio {
         try (Connection conexion = ConexionBD.obtenerConexion()) {
             conexion.setAutoCommit(false);
             try (PreparedStatement ps = conexion.prepareStatement(insertar, Statement.RETURN_GENERATED_KEYS)) {
-                // Código temporal de 7 caracteres; se reemplaza enseguida por P0001, P0002...
                 ps.setString(1, String.format("T%06d", Math.abs(System.nanoTime() % 1000000)));
                 asignarDatos(ps, paciente, 2);
                 ps.setInt(11, paciente.getIdNutriologo());
