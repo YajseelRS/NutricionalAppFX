@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMain.java to edit this template
- */
 package nutricionalappfx;
 
 import java.io.IOException;
@@ -15,11 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-
-/**
- *
- * @author chris
- */
 public class NutricionalAppFX extends Application {
     
     @Override
@@ -35,9 +26,6 @@ public class NutricionalAppFX extends Application {
         }        
     }
         
-        
-    
-
     /**
      * @param args the command line arguments
      */
